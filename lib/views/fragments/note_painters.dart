@@ -89,11 +89,11 @@ class StrokePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     // draw edges
     for (final stroke in strokes) {
-      drawStrokeAsPath(canvas, stroke);
+      drawStroke(canvas, stroke);
     }
 
     // draw current edge
-    drawStrokeAsPath(canvas, currentStroke);
+    drawStroke(canvas, currentStroke);
   }
 
   @override
