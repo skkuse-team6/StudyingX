@@ -46,7 +46,7 @@ class StrokePainter extends CustomPainter {
     final paint = Paint()
       ..color = Colors.black
       ..strokeCap = StrokeCap.round
-      ..strokeWidth = edge.edgeWidth
+      ..strokeWidth = edge.pressure * 5
       ..strokeJoin = StrokeJoin.round
       ..isAntiAlias = true;
     canvas.drawLine(edge.start, edge.end, paint);
@@ -69,12 +69,12 @@ class StrokePainter extends CustomPainter {
   void drawSmoothStroke(Canvas canvas, Stroke stroke) {
     List<Point> points = [];
     for (final vertex in stroke.getVertices()) {
-      points.add(Point(vertex.dx, vertex.dy));
+      points.add(Point(vertex.point.dx, vertex.point.dy, vertex.pressure));
     }
 
     final outlinePoints = getStroke(
       points,
-      size: stroke.edges.first.edgeWidth,
+      size: 5,
       thinning: 0.7,
       smoothing: 0.5,
       streamline: 0.5,
@@ -82,7 +82,7 @@ class StrokePainter extends CustomPainter {
       taperEnd: 0.0,
       capStart: true,
       capEnd: true,
-      simulatePressure: true,
+      simulatePressure: false,
       isComplete: false,
     );
 
@@ -116,16 +116,16 @@ class StrokePainter extends CustomPainter {
     if (stroke.edges.isEmpty) return;
 
     List<Edge> groupedEdges = [];
-    double currentWidth = stroke.edges.first.edgeWidth;
+    double currentWidth = stroke.edges.first.pressure;
 
     for (final edge in stroke.edges) {
-      if (edge.edgeWidth != currentWidth) {
+      if (edge.pressure != currentWidth) {
         // Draw the accumulated edges first
         _drawSmoothPathFromEdges(canvas, groupedEdges, currentWidth);
 
         // Reset for the next group
         groupedEdges = [];
-        currentWidth = edge.edgeWidth;
+        currentWidth = edge.pressure;
       }
       groupedEdges.add(edge);
     }

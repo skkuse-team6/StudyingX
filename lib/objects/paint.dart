@@ -1,11 +1,17 @@
 import 'dart:math';
 import 'dart:ui';
 
+class PressuredVertex {
+  PressuredVertex(this.point, this.pressure);
+  Offset point;
+  double pressure;
+}
+
 class Edge {
-  Edge(this.start, this.end, this.edgeWidth);
+  Edge(this.start, this.end, this.pressure);
   Offset start = Offset.zero;
   Offset end = Offset.zero;
-  double edgeWidth;
+  double pressure;
 
   bool intersectsWithCircle(Rect circle) {
     Offset center = circle.center;
@@ -14,7 +20,7 @@ class Edge {
     final startDistance = (start - center).distance;
     final endDistance = (end - center).distance;
 
-    final halfEdgeWidth = edgeWidth / 2;
+    final halfEdgeWidth = pressure / 2;
 
     if (startDistance <= radius + halfEdgeWidth ||
         endDistance <= radius + halfEdgeWidth) {
@@ -52,11 +58,11 @@ class Stroke {
     edges.add(edge);
   }
 
-  List<Offset> getVertices() {
-    List<Offset> vertices = [];
-    vertices.add(edges.first.start);
+  List<PressuredVertex> getVertices() {
+    List<PressuredVertex> vertices = [];
+    vertices.add(PressuredVertex(edges.first.start, edges.first.pressure));
     for (final edge in edges) {
-      vertices.add(edge.end);
+      vertices.add(PressuredVertex(edge.end, edge.pressure));
     }
     return vertices;
   }

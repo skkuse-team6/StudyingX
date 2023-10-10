@@ -9,9 +9,6 @@ import 'package:studyingx/objects/paint.dart';
 import 'package:studyingx/providers/pencil_kit_state.dart';
 import 'package:studyingx/views/fragments/note_painters.dart';
 
-const double minEdgeWidth = 5;
-const double edgeWidthFactor = 5;
-
 class NoteDrawer extends StatefulWidget {
   const NoteDrawer({Key? key}) : super(key: key);
 
@@ -161,9 +158,8 @@ class _NoteDrawerState extends State<NoteDrawer> {
         switch (mode) {
           case Mode.draw:
             if (lastPoint != null) {
-              double edgeWidth =
-                  max(currentPressure * edgeWidthFactor, minEdgeWidth);
-              final newEdge = Edge(lastPoint!, absPoint, edgeWidth);
+              double vertexPressure = currentPressure;
+              final newEdge = Edge(lastPoint!, absPoint, vertexPressure);
               // if last point is same as current point, don't add edge
               if (newEdge.start != newEdge.end) {
                 currentStroke.addEdge(newEdge);
