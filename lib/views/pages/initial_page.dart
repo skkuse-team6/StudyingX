@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:studyingx/routes/routes.dart';
+import 'package:studyingx/views/routes.dart';
 import 'package:studyingx/utils/navigate_transitions.dart';
 
 class InitialPage extends StatelessWidget {
@@ -14,7 +14,7 @@ class InitialPage extends StatelessWidget {
         width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("images/initial_page_bg.jpg"),
+            image: AssetImage("assets/images/initial_page_bg.jpg"),
             fit: BoxFit.cover,
           ),
         ),

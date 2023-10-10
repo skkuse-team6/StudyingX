@@ -29,11 +29,12 @@ class TouchableCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(borderRadius ?? 10),
       ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(borderRadius ?? 10),
-        onTap: onTap,
-        child: child,
-      ),
+      child: ClipRRect(
+          borderRadius: BorderRadius.circular(borderRadius ?? 10),
+          child: InkWell(
+            onTap: onTap,
+            child: child,
+          )),
     );
   }
 }

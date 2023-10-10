@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:studyingx/routes/molecules/touchable_card.dart';
-import 'package:studyingx/routes/routes.dart';
-import 'package:studyingx/utils/navigate_transitions.dart';
+import 'package:studyingx/views/fragments/note_grid_item.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -17,10 +15,10 @@ class _HomePageState extends State<HomePage> {
       body: Row(
         children: [
           Container(
-            color: const Color.fromARGB(255, 239, 239, 239),
-            width: 250,
+            color: Color.fromARGB(255, 29, 29, 29),
+            width: 230,
             child: const Center(
-              child: Text("LeftSideBar"),
+              child: Text("LeftSideBar", style: TextStyle(color: Colors.white)),
             ),
           ),
           Expanded(
@@ -59,22 +57,15 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: GridView.builder(
                       gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 5,
-                        crossAxisSpacing: 10,
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 200,
                         mainAxisSpacing: 20,
+                        crossAxisSpacing: 10,
+                        childAspectRatio: 1 / 1.5,
                       ),
                       itemBuilder: (context, index) {
-                        return TouchableCard(
-                          onTap: () {
-                            print("tapped note item");
-                            push(context, notePage);
-                          },
-                          child: const ListTile(
-                            title: Text("메모 제목"),
-                            subtitle: Text("메모 내용"),
-                          ),
-                        );
+                        return NoteGridItem(
+                            noteTitle: "메모 제목", noteEditedAt: DateTime.now());
                       },
                       itemCount: 20,
                     ),

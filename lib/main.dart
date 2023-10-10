@@ -1,9 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:studyingx/routes/pages/initial_page.dart';
-import 'package:studyingx/routes/routes.dart';
+import 'package:studyingx/providers/pencil_kit_state.dart';
+import 'package:studyingx/views/routes.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const StudyingXApp());
+  initializeDateFormatting().then((_) {
+    runApp(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => PencilKitState()),
+        ],
+        child: const StudyingXApp(),
+      ),
+    );
+  });
 }
 
 class StudyingXApp extends StatelessWidget {
