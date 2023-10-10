@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 class Edge {
@@ -50,10 +51,56 @@ class Stroke {
   void addEdge(Edge edge) {
     edges.add(edge);
   }
+
+  List<Offset> getVertices() {
+    List<Offset> vertices = [];
+    vertices.add(edges.first.start);
+    for (final edge in edges) {
+      vertices.add(edge.end);
+    }
+    return vertices;
+  }
 }
 
 class Mode {
   static const String draw = "draw";
   static const String move = "move";
   static const String erase = "erase";
+}
+
+double pointLineDistance(Offset point, Offset startLine, Offset endLine) {
+  var num = (startLine.dy - endLine.dy) * point.dx -
+      (startLine.dx - endLine.dx) * point.dy +
+      startLine.dx * endLine.dy -
+      startLine.dy * endLine.dx;
+  var denom =
+      pow(startLine.dx - endLine.dx, 2) + pow(startLine.dy - endLine.dy, 2);
+  return num.abs() / sqrt(denom);
+}
+
+List<Offset> douglasPeucker(List<Offset> points, double epsilon) {
+  if (points.length <= 2) {
+    return points;
+  }
+
+  double maxDistance = 0.0;
+  int index = 0;
+
+  for (int i = 1; i < points.length - 1; i++) {
+    double distance = pointLineDistance(points[i], points.first, points.last);
+
+    if (distance > maxDistance) {
+      maxDistance = distance;
+      index = i;
+    }
+  }
+
+  if (maxDistance > epsilon) {
+    var left = douglasPeucker(points.sublist(0, index + 1), epsilon);
+    var right = douglasPeucker(points.sublist(index), epsilon);
+
+    return [...left, ...right.skip(1)];
+  } else {
+    return [points.first, points.last];
+  }
 }

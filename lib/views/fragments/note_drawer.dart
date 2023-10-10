@@ -9,8 +9,8 @@ import 'package:studyingx/objects/paint.dart';
 import 'package:studyingx/providers/pencil_kit_state.dart';
 import 'package:studyingx/views/fragments/note_painters.dart';
 
-const double minEdgeWidth = 3;
-const double edgeWidthFactor = 3;
+const double minEdgeWidth = 5;
+const double edgeWidthFactor = 5;
 
 class NoteDrawer extends StatefulWidget {
   const NoteDrawer({Key? key}) : super(key: key);
@@ -130,9 +130,6 @@ class _NoteDrawerState extends State<NoteDrawer> {
 
         pointers[e.pointer] = e.kind;
 
-        logger.d("drawing device: ${e.kind}");
-        logger.d(mode);
-
         switch (mode) {
           case Mode.draw:
             final point = e.localPosition;
@@ -194,6 +191,7 @@ class _NoteDrawerState extends State<NoteDrawer> {
 
         switch (mode) {
           case Mode.draw:
+            // currentStroke.smoothify2();
             strokes.add(currentStroke);
             currentStroke = Stroke([]);
             lastPoint = null;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:perfect_freehand/perfect_freehand.dart';
 import 'package:studyingx/objects/paint.dart';
 
 class EraserPainter extends CustomPainter {
@@ -35,42 +36,6 @@ class StrokePainter extends CustomPainter {
   List<Stroke> strokes = [];
   Stroke currentStroke;
 
-  void drawStrokeAsPath(Canvas canvas, Stroke stroke) {
-    final paint = Paint()
-      ..color = Colors.black
-      ..strokeCap = StrokeCap.round
-      ..style = PaintingStyle.stroke;
-
-    final path = Path();
-
-    bool isFirstEdge = true;
-    Offset? prevEnd;
-    for (final edge in stroke.edges) {
-      if (isFirstEdge) {
-        path.moveTo(edge.start.dx, edge.start.dy);
-        isFirstEdge = false;
-      }
-
-      paint.strokeWidth = edge.edgeWidth;
-
-      final controlPoint = Offset(
-        (edge.start.dx + edge.end.dx) / 2,
-        (edge.start.dy + edge.end.dy) / 2,
-      );
-
-      path.quadraticBezierTo(
-        controlPoint.dx,
-        controlPoint.dy,
-        edge.end.dx,
-        edge.end.dy,
-      );
-
-      prevEnd = edge.end;
-    }
-
-    canvas.drawPath(path, paint);
-  }
-
   void drawStroke(Canvas canvas, Stroke stroke) {
     for (final edge in stroke.edges) {
       drawEdge(canvas, edge);
@@ -81,23 +46,120 @@ class StrokePainter extends CustomPainter {
     final paint = Paint()
       ..color = Colors.black
       ..strokeCap = StrokeCap.round
-      ..strokeWidth = edge.edgeWidth;
+      ..strokeWidth = edge.edgeWidth
+      ..strokeJoin = StrokeJoin.round
+      ..isAntiAlias = true;
     canvas.drawLine(edge.start, edge.end, paint);
   }
 
   @override
   void paint(Canvas canvas, Size size) {
+    List<Stroke> allStrokes = [...strokes, currentStroke];
     // draw edges
-    for (final stroke in strokes) {
-      drawStroke(canvas, stroke);
+    for (final stroke in allStrokes) {
+      drawSmoothStroke(canvas, stroke);
     }
-
-    // draw current edge
-    drawStroke(canvas, currentStroke);
   }
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) {
     return true;
+  }
+
+  void drawSmoothStroke(Canvas canvas, Stroke stroke) {
+    List<Point> points = [];
+    for (final vertex in stroke.getVertices()) {
+      points.add(Point(vertex.dx, vertex.dy));
+    }
+
+    final outlinePoints = getStroke(
+      points,
+      size: stroke.edges.first.edgeWidth,
+      thinning: 0.7,
+      smoothing: 0.5,
+      streamline: 0.5,
+      taperStart: 0.0,
+      taperEnd: 0.0,
+      capStart: true,
+      capEnd: true,
+      simulatePressure: true,
+      isComplete: false,
+    );
+
+    final path = Path();
+
+    if (outlinePoints.isEmpty) {
+      // If the list is empty, don't do anything.
+      return;
+    } else if (outlinePoints.length < 2) {
+      // If the list only has one point, draw a dot.
+      path.addOval(Rect.fromCircle(
+          center: Offset(outlinePoints[0].x, outlinePoints[0].y), radius: 1));
+    } else {
+      // Otherwise, draw a line that connects each point with a bezier curve segment.
+      path.moveTo(outlinePoints[0].x, outlinePoints[0].y);
+
+      for (int i = 1; i < outlinePoints.length - 1; ++i) {
+        final p0 = outlinePoints[i];
+        final p1 = outlinePoints[i + 1];
+        path.quadraticBezierTo(
+            p0.x, p0.y, (p0.x + p1.x) / 2, (p0.y + p1.y) / 2);
+      }
+    }
+
+    // 3. Draw the path to the canvas
+    Paint paint = Paint()..color = Colors.black;
+    canvas.drawPath(path, paint);
+  }
+
+  void drawStrokeAsPath(Canvas canvas, Stroke stroke) {
+    if (stroke.edges.isEmpty) return;
+
+    List<Edge> groupedEdges = [];
+    double currentWidth = stroke.edges.first.edgeWidth;
+
+    for (final edge in stroke.edges) {
+      if (edge.edgeWidth != currentWidth) {
+        // Draw the accumulated edges first
+        _drawSmoothPathFromEdges(canvas, groupedEdges, currentWidth);
+
+        // Reset for the next group
+        groupedEdges = [];
+        currentWidth = edge.edgeWidth;
+      }
+      groupedEdges.add(edge);
+    }
+
+    // Draw the remaining edges
+    if (groupedEdges.isNotEmpty) {
+      _drawSmoothPathFromEdges(canvas, groupedEdges, currentWidth);
+    }
+  }
+
+  void _drawSmoothPathFromEdges(Canvas canvas, List<Edge> edges, double width) {
+    final paint = Paint()
+      ..color = Colors.black
+      ..strokeCap = StrokeCap.round
+      ..strokeWidth = width
+      ..strokeJoin = StrokeJoin.round
+      ..isAntiAlias = true
+      ..style = PaintingStyle.stroke;
+
+    final path = Path();
+    path.moveTo(edges.first.start.dx, edges.first.start.dy);
+
+    for (final edge in edges) {
+      // path.lineTo(edge.end.dx, edge.end.dy);
+      path.cubicTo(
+        edge.start.dx,
+        edge.start.dy,
+        edge.end.dx,
+        edge.end.dy,
+        edge.end.dx,
+        edge.end.dy,
+      );
+    }
+
+    canvas.drawPath(path, paint);
   }
 }
