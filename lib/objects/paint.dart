@@ -60,6 +60,7 @@ class Stroke {
 
   List<PressuredVertex> getVertices() {
     List<PressuredVertex> vertices = [];
+    if (edges.isEmpty) return vertices;
     vertices.add(PressuredVertex(edges.first.start, edges.first.pressure));
     for (final edge in edges) {
       vertices.add(PressuredVertex(edge.end, edge.pressure));
