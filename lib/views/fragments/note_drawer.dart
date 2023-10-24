@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -260,27 +259,27 @@ class _NoteDrawerState extends State<NoteDrawer> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text("mode: $mode",
-                                style: TextStyle(color: Colors.white)),
+                                style: const TextStyle(color: Colors.white)),
                             Text("drawing device: $drawingDevice",
-                                style: TextStyle(color: Colors.white)),
+                                style: const TextStyle(color: Colors.white)),
                             Text("pointers: ${pointers.length}",
-                                style: TextStyle(color: Colors.white)),
+                                style: const TextStyle(color: Colors.white)),
                             Text("using stylus: $usingStylus",
-                                style: TextStyle(color: Colors.white)),
+                                style: const TextStyle(color: Colors.white)),
                             Text(
                                 "current stroke: ${currentStroke.edges.length}",
-                                style: TextStyle(color: Colors.white)),
+                                style: const TextStyle(color: Colors.white)),
                             Text(
                               "pressure: ${currentPressure.toStringAsFixed(2)}",
-                              style: TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                             ),
                             Text(
                               "orientation: ${currentOrientation.toStringAsFixed(2)}",
-                              style: TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                             ),
                             Text(
                               "tilt: ${currentTilt.toStringAsFixed(2)}",
-                              style: TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.white),
                             ),
                           ],
                         ),

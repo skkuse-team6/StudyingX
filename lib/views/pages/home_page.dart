@@ -15,7 +15,7 @@ class _HomePageState extends State<HomePage> {
       body: Row(
         children: [
           Container(
-            color: Color.fromARGB(255, 29, 29, 29),
+            color: const Color.fromARGB(255, 29, 29, 29),
             width: 230,
             child: const Center(
               child: Text("LeftSideBar", style: TextStyle(color: Colors.white)),

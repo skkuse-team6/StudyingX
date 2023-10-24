@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:provider/provider.dart';
-import 'package:studyingx/providers/pencil_kit_state.dart';
 import 'package:studyingx/views/molecules/app_button.dart';
 
 class UtilKit extends StatefulWidget {
@@ -17,7 +15,7 @@ const inactiveIconSvgColorFilter =
     ColorFilter.mode(Color.fromARGB(56, 255, 255, 255), BlendMode.srcIn);
 
 class _UtilKitState extends State<UtilKit> {
-  bool _isAutoScriptPanelOpen = false;
+  final bool _isAutoScriptPanelOpen = false;
   bool get isAutoScriptPanelOpen => _isAutoScriptPanelOpen;
 
   @override
@@ -26,7 +24,7 @@ class _UtilKitState extends State<UtilKit> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         AppIconButton(
-          onPressed: () => null,
+          onPressed: () {},
           icon: SvgPicture.asset(
             "assets/svg/mic_icon.svg",
             height: 20,
@@ -37,7 +35,7 @@ class _UtilKitState extends State<UtilKit> {
           ),
         ),
         AppIconButton(
-          onPressed: () => null,
+          onPressed: () {},
           icon: ShaderMask(
             shaderCallback: (Rect bounds) {
               return const LinearGradient(

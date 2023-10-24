@@ -3,9 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:studyingx/providers/pencil_kit_state.dart';
 import 'package:studyingx/views/fragments/note_drawer.dart';
 import 'package:studyingx/views/fragments/pencil_kit_bar.dart';
-import 'package:studyingx/views/molecules/app_button.dart';
-import 'package:studyingx/views/molecules/app_icon_text_button.dart';
-import 'package:studyingx/views/styles/palette.dart';
 
 class NotePage extends StatefulWidget {
   const NotePage({Key? key}) : super(key: key);
@@ -65,17 +62,17 @@ class _HoveredPointerHelpSwitchState extends State<HoveredPointerHelpSwitch> {
 
     return Container(
         padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(color: Color.fromARGB(148, 0, 0, 0)),
+        decoration: const BoxDecoration(color: Color.fromARGB(148, 0, 0, 0)),
         child: Row(
           children: [
-            Text(
+            const Text(
               "[Debug] recognize finger/mouse as stylus",
-              style: const TextStyle(color: Colors.white, fontSize: 10),
+              style: TextStyle(color: Colors.white, fontSize: 10),
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Transform.scale(
               scale: 0.7,
-              child: Container(
+              child: SizedBox(
                 height: 15,
                 width: 30,
                 child: Switch(
