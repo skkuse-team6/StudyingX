@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 import 'package:perfect_freehand/perfect_freehand.dart';
 import 'package:studyingx/objects/paint.dart';
 
@@ -36,21 +37,21 @@ class StrokePainter extends CustomPainter {
   List<Stroke> strokes = [];
   Stroke currentStroke;
 
-  void drawStroke(Canvas canvas, Stroke stroke) {
-    for (final edge in stroke.edges) {
-      drawEdge(canvas, edge);
-    }
-  }
+  // void drawStroke(Canvas canvas, Stroke stroke) {
+  //   for (final edge in stroke.edges) {
+  //     drawEdge(canvas, edge, stroke.color);
+  //   }
+  // }
 
-  void drawEdge(Canvas canvas, Edge edge) {
-    final paint = Paint()
-      ..color = Colors.black
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = edge.pressure * 5
-      ..strokeJoin = StrokeJoin.round
-      ..isAntiAlias = true;
-    canvas.drawLine(edge.start, edge.end, paint);
-  }
+  // void drawEdge(Canvas canvas, Edge edge, Color color) {
+  //   final paint = Paint()
+  //     ..color = color
+  //     ..strokeCap = StrokeCap.round
+  //     ..strokeWidth = edge.pressure * 5
+  //     ..strokeJoin = StrokeJoin.round
+  //     ..isAntiAlias = true;
+  //   canvas.drawLine(edge.start, edge.end, paint);
+  // }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -108,58 +109,58 @@ class StrokePainter extends CustomPainter {
     }
 
     // 3. Draw the path to the canvas
-    Paint paint = Paint()..color = Colors.black;
+    Paint paint = Paint()..color = stroke.color;
     canvas.drawPath(path, paint);
   }
 
-  void drawStrokeAsPath(Canvas canvas, Stroke stroke) {
-    if (stroke.edges.isEmpty) return;
+  // void drawStrokeAsPath(Canvas canvas, Stroke stroke) {
+  //   if (stroke.edges.isEmpty) return;
 
-    List<Edge> groupedEdges = [];
-    double currentWidth = stroke.edges.first.pressure;
+  //   List<Edge> groupedEdges = [];
+  //   double currentWidth = stroke.edges.first.pressure;
 
-    for (final edge in stroke.edges) {
-      if (edge.pressure != currentWidth) {
-        // Draw the accumulated edges first
-        _drawSmoothPathFromEdges(canvas, groupedEdges, currentWidth);
+  //   for (final edge in stroke.edges) {
+  //     if (edge.pressure != currentWidth) {
+  //       // Draw the accumulated edges first
+  //       _drawSmoothPathFromEdges(canvas, groupedEdges, currentWidth);
 
-        // Reset for the next group
-        groupedEdges = [];
-        currentWidth = edge.pressure;
-      }
-      groupedEdges.add(edge);
-    }
+  //       // Reset for the next group
+  //       groupedEdges = [];
+  //       currentWidth = edge.pressure;
+  //     }
+  //     groupedEdges.add(edge);
+  //   }
 
-    // Draw the remaining edges
-    if (groupedEdges.isNotEmpty) {
-      _drawSmoothPathFromEdges(canvas, groupedEdges, currentWidth);
-    }
-  }
+  //   // Draw the remaining edges
+  //   if (groupedEdges.isNotEmpty) {
+  //     _drawSmoothPathFromEdges(canvas, groupedEdges, currentWidth);
+  //   }
+  // }
 
-  void _drawSmoothPathFromEdges(Canvas canvas, List<Edge> edges, double width) {
-    final paint = Paint()
-      ..color = Colors.black
-      ..strokeCap = StrokeCap.round
-      ..strokeWidth = width
-      ..strokeJoin = StrokeJoin.round
-      ..isAntiAlias = true
-      ..style = PaintingStyle.stroke;
+  // void _drawSmoothPathFromEdges(Canvas canvas, List<Edge> edges, double width) {
+  //   final paint = Paint()
+  //     ..color = Colors.black
+  //     ..strokeCap = StrokeCap.round
+  //     ..strokeWidth = width
+  //     ..strokeJoin = StrokeJoin.round
+  //     ..isAntiAlias = true
+  //     ..style = PaintingStyle.stroke;
 
-    final path = Path();
-    path.moveTo(edges.first.start.dx, edges.first.start.dy);
+  //   final path = Path();
+  //   path.moveTo(edges.first.start.dx, edges.first.start.dy);
 
-    for (final edge in edges) {
-      // path.lineTo(edge.end.dx, edge.end.dy);
-      path.cubicTo(
-        edge.start.dx,
-        edge.start.dy,
-        edge.end.dx,
-        edge.end.dy,
-        edge.end.dx,
-        edge.end.dy,
-      );
-    }
+  //   for (final edge in edges) {
+  //     // path.lineTo(edge.end.dx, edge.end.dy);
+  //     path.cubicTo(
+  //       edge.start.dx,
+  //       edge.start.dy,
+  //       edge.end.dx,
+  //       edge.end.dy,
+  //       edge.end.dx,
+  //       edge.end.dy,
+  //     );
+  //   }
 
-    canvas.drawPath(path, paint);
-  }
+  //   canvas.drawPath(path, paint);
+  // }
 }

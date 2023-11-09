@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:studyingx/providers/pencil_kit_state.dart';
 import 'package:studyingx/views/fragments/note_drawer.dart';
 import 'package:studyingx/views/fragments/pencil_kit_bar.dart';
+import 'package:studyingx/views/molecules/color_palette.dart';
 
 class NotePage extends StatefulWidget {
   const NotePage({Key? key}) : super(key: key);
@@ -12,8 +13,16 @@ class NotePage extends StatefulWidget {
 }
 
 class _NotePageState extends State<NotePage> {
+  bool showColorPicker = false;
+
   void onPressed() {
     Navigator.pop(context);
+  }
+
+  void onToggleColorPicker(bool show) {
+    setState(() {
+      showColorPicker = !showColorPicker;
+    });
   }
 
   @override
@@ -22,7 +31,9 @@ class _NotePageState extends State<NotePage> {
       body: SafeArea(
         child: Column(
           children: [
-            const PencilKitBar(),
+            PencilKitBar(
+              onToggleColorPicker: onToggleColorPicker,
+            ),
             Expanded(
               flex: 1,
               child: Stack(
@@ -35,12 +46,80 @@ class _NotePageState extends State<NotePage> {
                     top: 10,
                     left: 10,
                     child: HoveredPointerHelpSwitch(),
-                  )
+                  ),
+                  if (showColorPicker)
+                    const Positioned(
+                        top: 15,
+                        left: 0,
+                        right: 0,
+                        child: Align(
+                            alignment: Alignment.center, child: ColorPicker())),
                 ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ColorPicker extends StatefulWidget {
+  const ColorPicker({Key? key}) : super(key: key);
+
+  @override
+  State<ColorPicker> createState() => _ColorPickerState();
+}
+
+class _ColorPickerState extends State<ColorPicker> {
+  void onColorPick(Color color) {
+    PencilKitState state = Provider.of<PencilKitState>(context, listen: false);
+    state.setPenColor(color.value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const List<Color> colorPickerTemplateColors = [
+      Colors.black,
+      Colors.red,
+      Colors.green,
+      Colors.blue,
+      Colors.purple,
+    ];
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      width: 200,
+      decoration: BoxDecoration(
+        border: Border.all(color: const Color.fromARGB(25, 0, 0, 0)),
+        borderRadius: BorderRadius.circular(10),
+        color: Colors.white,
+        boxShadow: [
+          const BoxShadow(
+            color: Color.fromARGB(30, 0, 0, 0),
+            spreadRadius: 1,
+            offset: Offset(0, 2),
+            blurRadius: 5,
+          )
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ...colorPickerTemplateColors.map((color) {
+            return ColorPalette(
+              color: color,
+              onPressed: onColorPick,
+            );
+          }).toList(),
+          ColorPalette(
+            color: Colors.black,
+            onPressed: onColorPick,
+            backgroundImage:
+                const AssetImage("assets/images/custom_color_bg.png"),
+          ),
+        ],
       ),
     );
   }

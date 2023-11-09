@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:studyingx/views/styles/palette.dart';
 
 class AppIconButton extends StatelessWidget {
-  const AppIconButton({super.key, required this.onPressed, required this.icon});
+  const AppIconButton(
+      {super.key, required this.onPressed, required this.icon, this.color});
 
   final void Function() onPressed;
   final Widget icon;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +27,7 @@ class AppIconButton extends StatelessWidget {
         // transparent
         backgroundColor: MaterialStateProperty.resolveWith<Color>(
           (Set<MaterialState> states) {
-            if (states.contains(MaterialState.hovered)) {
-              return Colors.transparent;
-            }
-            return Colors.transparent;
+            return color ?? Colors.transparent;
           },
         ),
         animationDuration: Duration.zero,

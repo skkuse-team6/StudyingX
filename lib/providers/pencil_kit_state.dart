@@ -11,6 +11,10 @@ class PencilKitMode {
 class PencilKitState with ChangeNotifier {
   String _drawMode = PencilKitMode.pen;
   String get drawMode => _drawMode;
+  void setDrawMode(String mode) {
+    _drawMode = mode;
+    notifyListeners();
+  }
 
   // debug
   bool _regardFingerAsStylus = false;
@@ -20,8 +24,10 @@ class PencilKitState with ChangeNotifier {
     notifyListeners();
   }
 
-  void setDrawMode(String mode) {
-    _drawMode = mode;
+  int _penColor = 0xff000000;
+  int get penColor => _penColor;
+  void setPenColor(int color) {
+    _penColor = color;
     notifyListeners();
   }
 }

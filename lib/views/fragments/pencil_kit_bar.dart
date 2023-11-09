@@ -3,7 +3,10 @@ import 'package:studyingx/views/fragments/pencil_kit.dart';
 import 'package:studyingx/views/fragments/util_kit.dart';
 
 class PencilKitBar extends StatefulWidget {
-  const PencilKitBar({Key? key}) : super(key: key);
+  const PencilKitBar({Key? key, required this.onToggleColorPicker})
+      : super(key: key);
+
+  final BoolCallback onToggleColorPicker;
 
   @override
   State<StatefulWidget> createState() {
@@ -35,7 +38,11 @@ class _PencilKitBarState extends State<PencilKitBar> {
                 ),
               ),
             ),
-            const Expanded(child: PencilKit()),
+            Expanded(
+              child: PencilKit(
+                onToggleColorPicker: widget.onToggleColorPicker,
+              ),
+            ),
             const Expanded(child: UtilKit()),
           ],
         ),

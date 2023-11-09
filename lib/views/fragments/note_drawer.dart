@@ -25,7 +25,7 @@ class _NoteDrawerState extends State<NoteDrawer> {
 
   // drawing
   List<Stroke> strokes = [];
-  Stroke currentStroke = Stroke([]);
+  Stroke currentStroke = Stroke([], Colors.black);
   PointerDeviceKind? drawingDevice;
   Offset? lastPoint;
   double? _currentPressure;
@@ -128,6 +128,7 @@ class _NoteDrawerState extends State<NoteDrawer> {
 
         switch (mode) {
           case Mode.draw:
+            currentStroke = Stroke([], Color(state.penColor));
             final point = e.localPosition;
             final absPoint =
                 Offset(point.dx, point.dy + _scrollController.offset);
@@ -188,7 +189,7 @@ class _NoteDrawerState extends State<NoteDrawer> {
           case Mode.draw:
             // currentStroke.smoothify2();
             strokes.add(currentStroke);
-            currentStroke = Stroke([]);
+            currentStroke = Stroke([], Color(state.penColor));
             lastPoint = null;
             break;
           case Mode.erase:
@@ -205,7 +206,7 @@ class _NoteDrawerState extends State<NoteDrawer> {
         switch (mode) {
           case Mode.draw:
             strokes.add(currentStroke);
-            currentStroke = Stroke([]);
+            currentStroke = Stroke([], Color(state.penColor));
             lastPoint = null;
             break;
           case Mode.erase:

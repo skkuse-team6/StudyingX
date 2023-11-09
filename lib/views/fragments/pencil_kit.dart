@@ -4,8 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:studyingx/providers/pencil_kit_state.dart';
 import 'package:studyingx/views/molecules/app_button.dart';
 
+typedef BoolCallback = void Function(bool);
+
 class PencilKit extends StatefulWidget {
-  const PencilKit({super.key});
+  const PencilKit({super.key, required this.onToggleColorPicker});
+
+  final BoolCallback onToggleColorPicker;
 
   @override
   _PencilKitState createState() => _PencilKitState();
@@ -14,7 +18,11 @@ class PencilKit extends StatefulWidget {
 const activeIconSvgColorFilter =
     ColorFilter.mode(Colors.white, BlendMode.srcIn);
 const inactiveIconSvgColorFilter =
-    ColorFilter.mode(Color.fromARGB(56, 255, 255, 255), BlendMode.srcIn);
+    ColorFilter.mode(Color.fromARGB(51, 255, 255, 255), BlendMode.srcIn);
+Function customActiveColorFilter =
+    (Color color) => ColorFilter.mode(color, BlendMode.srcIn);
+Function customInactiveColorFilter =
+    (Color color) => ColorFilter.mode(color.withOpacity(0.2), BlendMode.srcIn);
 
 class _PencilKitState extends State<PencilKit> {
   @override
@@ -27,7 +35,7 @@ class _PencilKitState extends State<PencilKit> {
           onPressed: () {
             if (state.drawMode == PencilKitMode.pen) {
               // already in pen mode
-              // TODO :: float color picker
+              widget.onToggleColorPicker(true);
             }
             state.setDrawMode(PencilKitMode.pen);
           },
@@ -36,7 +44,7 @@ class _PencilKitState extends State<PencilKit> {
             height: 25,
             width: 25,
             colorFilter: state.drawMode == PencilKitMode.pen
-                ? activeIconSvgColorFilter
+                ? customActiveColorFilter(Color(state.penColor))
                 : inactiveIconSvgColorFilter,
           ),
         ),

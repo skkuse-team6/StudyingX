@@ -51,8 +51,9 @@ class Edge {
 }
 
 class Stroke {
-  Stroke(this.edges);
+  Stroke(this.edges, this.color);
   List<Edge> edges = [];
+  Color color;
 
   void addEdge(Edge edge) {
     edges.add(edge);
