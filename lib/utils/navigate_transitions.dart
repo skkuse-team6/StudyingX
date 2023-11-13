@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:studyingx/routes/routes.dart';
+import 'package:studyingx/views/routes.dart';
 
 // default push transition
 void push(BuildContext context, String routeName) {
