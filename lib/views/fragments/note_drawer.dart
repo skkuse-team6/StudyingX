@@ -8,6 +8,10 @@ import 'package:studyingx/objects/paint.dart';
 import 'package:studyingx/providers/pencil_kit_state.dart';
 import 'package:studyingx/views/fragments/note_painters.dart';
 
+const double pageHeightUnit = 800;
+const double minPageHeight = 2 * pageHeightUnit;
+const double panelExpandToleranceY = 50;
+
 class NoteDrawer extends StatefulWidget {
   const NoteDrawer({Key? key}) : super(key: key);
 
@@ -22,6 +26,26 @@ class _NoteDrawerState extends State<NoteDrawer> {
 
   // scrolling
   final ScrollController _scrollController = ScrollController();
+
+  // panel
+  double panelHeight = minPageHeight;
+
+  double calculateLastPointY() {
+    double maxY = 0;
+    for (int i = strokes.length - 1; i >= 0; i--) {
+      final stroke = strokes[i];
+      for (int j = stroke.edges.length - 1; j >= 0; j--) {
+        final edge = stroke.edges[j];
+        if (maxY < edge.start.dy) {
+          maxY = edge.start.dy;
+        }
+        if (maxY < edge.end.dy) {
+          maxY = edge.end.dy;
+        }
+      }
+    }
+    return maxY;
+  }
 
   // drawing
   List<Stroke> strokes = [];
@@ -165,11 +189,16 @@ class _NoteDrawerState extends State<NoteDrawer> {
                 currentStroke.addEdge(newEdge);
               }
             }
+            if (absPoint.dy > panelHeight - panelExpandToleranceY) {
+              setState(() {
+                panelHeight += pageHeightUnit;
+              });
+            }
             lastPoint = absPoint;
             break;
           case Mode.erase:
             final eraserRect =
-                Rect.fromCircle(center: point, radius: eraseRadius);
+                Rect.fromCircle(center: absPoint, radius: eraseRadius);
             strokes.removeWhere((stroke) {
               return stroke.edges.any((edge) {
                 return edge.intersectsWithCircle(eraserRect);
@@ -193,6 +222,14 @@ class _NoteDrawerState extends State<NoteDrawer> {
             lastPoint = null;
             break;
           case Mode.erase:
+            if (panelHeight > minPageHeight) {
+              double maxY = calculateLastPointY();
+              logger.d("maxY: $maxY");
+              while (
+                  maxY < panelHeight - pageHeightUnit - panelExpandToleranceY) {
+                panelHeight -= pageHeightUnit;
+              }
+            }
             erasingPoint = null;
             break;
         }
@@ -233,7 +270,7 @@ class _NoteDrawerState extends State<NoteDrawer> {
               SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height:
-                    3000, // expand if stroke reach the bottom (with padding)
+                    panelHeight, // expand if stroke reach the bottom (with padding)
                 child: Stack(
                   children: [
                     CustomPaint(
@@ -247,6 +284,13 @@ class _NoteDrawerState extends State<NoteDrawer> {
                             eraseRadius: eraseRadius),
                         child: Container(),
                       ),
+                    CustomPaint(
+                      painter: PageSegmentPainter(
+                        pageHeightUnit: pageHeightUnit,
+                        panelHeight: panelHeight,
+                      ),
+                      child: Container(),
+                    ),
                     Positioned(
                       top: 100,
                       left: 20,
@@ -266,6 +310,8 @@ class _NoteDrawerState extends State<NoteDrawer> {
                             Text("pointers: ${pointers.length}",
                                 style: const TextStyle(color: Colors.white)),
                             Text("using stylus: $usingStylus",
+                                style: const TextStyle(color: Colors.white)),
+                            Text("panel height: $panelHeight",
                                 style: const TextStyle(color: Colors.white)),
                             Text(
                                 "current stroke: ${currentStroke.edges.length}",

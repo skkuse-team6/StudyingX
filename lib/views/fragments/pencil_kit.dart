@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:studyingx/definitions/callbacks.dart';
 import 'package:studyingx/providers/pencil_kit_state.dart';
 import 'package:studyingx/views/molecules/app_button.dart';
-
-typedef BoolCallback = void Function(bool);
 
 class PencilKit extends StatefulWidget {
   const PencilKit({super.key, required this.onToggleColorPicker});
@@ -35,7 +34,7 @@ class _PencilKitState extends State<PencilKit> {
           onPressed: () {
             if (state.drawMode == PencilKitMode.pen) {
               // already in pen mode
-              widget.onToggleColorPicker(true);
+              widget.onToggleColorPicker(false);
             }
             state.setDrawMode(PencilKitMode.pen);
           },
@@ -49,7 +48,10 @@ class _PencilKitState extends State<PencilKit> {
           ),
         ),
         AppIconButton(
-          onPressed: () => state.setDrawMode(PencilKitMode.eraser),
+          onPressed: () {
+            widget.onToggleColorPicker(true);
+            state.setDrawMode(PencilKitMode.eraser);
+          },
           icon: SvgPicture.asset(
             "assets/svg/pencil_kit_eraser.svg",
             height: 25,
@@ -71,7 +73,10 @@ class _PencilKitState extends State<PencilKit> {
         //   ),
         // ),
         AppIconButton(
-          onPressed: () => state.setDrawMode(PencilKitMode.move),
+          onPressed: () {
+            widget.onToggleColorPicker(true);
+            state.setDrawMode(PencilKitMode.move);
+          },
           icon: SvgPicture.asset(
             "assets/svg/pencil_kit_move.svg",
             height: 25,

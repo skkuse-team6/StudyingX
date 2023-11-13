@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 typedef Callback = void Function(Color color);
 
@@ -19,7 +20,7 @@ class ColorPalette extends StatefulWidget {
 }
 
 class _ColorPaletteState extends State<ColorPalette> {
-  Color customColor = Colors.black;
+  Color? customColor;
   void setCustomColor(Color color) {
     setState(() {
       customColor = color;
@@ -27,7 +28,45 @@ class _ColorPaletteState extends State<ColorPalette> {
   }
 
   void floatColorPicker(BuildContext context) {
-    // TODO: implement floatColorPicker
+    Color pickerColor = customColor ?? Colors.black;
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.white,
+        title: const Text('Custom Color'),
+        content: SingleChildScrollView(
+          child: ColorPicker(
+            pickerColor: pickerColor,
+            onColorChanged: setCustomColor,
+            enableAlpha: false,
+          ),
+          // Use Material color picker:
+          //
+          // child: MaterialPicker(
+          //   pickerColor: pickerColor,
+          //   onColorChanged: setCustomColor,
+          //   enableLabel: true, // only on portrait mode
+          // ),
+          //
+          // Use Block color picker:
+          //
+          // child: BlockPicker(
+          //   pickerColor: pickerColor,
+          //   onColorChanged: setCustomColor,
+          // ),
+          //
+        ),
+        actions: <Widget>[
+          ElevatedButton(
+            child: const Text('OK'),
+            onPressed: () {
+              widget.onPressed!(customColor ?? Colors.black);
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   @override

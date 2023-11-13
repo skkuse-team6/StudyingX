@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:studyingx/definitions/callbacks.dart';
 import 'package:studyingx/providers/pencil_kit_state.dart';
 import 'package:studyingx/views/fragments/note_drawer.dart';
 import 'package:studyingx/views/fragments/pencil_kit_bar.dart';
@@ -19,9 +20,9 @@ class _NotePageState extends State<NotePage> {
     Navigator.pop(context);
   }
 
-  void onToggleColorPicker(bool show) {
+  void onToggleColorPicker(bool mustHide) {
     setState(() {
-      showColorPicker = !showColorPicker;
+      showColorPicker = mustHide ? false : !showColorPicker;
     });
   }
 
@@ -48,12 +49,17 @@ class _NotePageState extends State<NotePage> {
                     child: HoveredPointerHelpSwitch(),
                   ),
                   if (showColorPicker)
-                    const Positioned(
-                        top: 15,
-                        left: 0,
-                        right: 0,
-                        child: Align(
-                            alignment: Alignment.center, child: ColorPicker())),
+                    Positioned(
+                      top: 15,
+                      left: 0,
+                      right: 0,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: ColorPicker(
+                          onToggleColorPicker: onToggleColorPicker,
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
@@ -65,7 +71,10 @@ class _NotePageState extends State<NotePage> {
 }
 
 class ColorPicker extends StatefulWidget {
-  const ColorPicker({Key? key}) : super(key: key);
+  const ColorPicker({Key? key, required this.onToggleColorPicker})
+      : super(key: key);
+
+  final BoolCallback onToggleColorPicker;
 
   @override
   State<ColorPicker> createState() => _ColorPickerState();
@@ -75,6 +84,7 @@ class _ColorPickerState extends State<ColorPicker> {
   void onColorPick(Color color) {
     PencilKitState state = Provider.of<PencilKitState>(context, listen: false);
     state.setPenColor(color.value);
+    widget.onToggleColorPicker(true);
   }
 
   @override

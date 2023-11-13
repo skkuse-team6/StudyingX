@@ -3,6 +3,33 @@ import 'package:logger/logger.dart';
 import 'package:perfect_freehand/perfect_freehand.dart';
 import 'package:studyingx/objects/paint.dart';
 
+class PageSegmentPainter extends CustomPainter {
+  PageSegmentPainter({required this.panelHeight, required this.pageHeightUnit});
+  final double panelHeight;
+  final double pageHeightUnit;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    int segments = panelHeight ~/ pageHeightUnit;
+    for (int i = 1; i <= segments; i++) {
+      final paint = Paint()
+        ..color = const Color.fromARGB(70, 0, 0, 0)
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = 1.0
+        ..strokeJoin = StrokeJoin.round
+        ..isAntiAlias = true
+        ..style = PaintingStyle.stroke;
+      canvas.drawLine(Offset(0, pageHeightUnit * i),
+          Offset(size.width, pageHeightUnit * i), paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+    return true;
+  }
+}
+
 class EraserPainter extends CustomPainter {
   EraserPainter({this.currentPoint, required this.eraseRadius});
   Offset? currentPoint;

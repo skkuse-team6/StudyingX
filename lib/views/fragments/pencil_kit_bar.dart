@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:studyingx/definitions/callbacks.dart';
 import 'package:studyingx/views/fragments/pencil_kit.dart';
 import 'package:studyingx/views/fragments/util_kit.dart';
 
