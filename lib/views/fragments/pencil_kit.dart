@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:studyingx/definitions/callbacks.dart';
 import 'package:studyingx/providers/pencil_kit_state.dart';
-import 'package:studyingx/views/molecules/app_button.dart';
+import 'package:studyingx/views/molecules/app_icon_button.dart';
 
 class PencilKit extends StatefulWidget {
   const PencilKit({super.key, required this.onToggleColorPicker});
