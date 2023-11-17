@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:studyingx/views/molecules/app_button.dart';
+import 'package:studyingx/views/molecules/app_icon_button.dart';
 
 class UtilKit extends StatefulWidget {
-  const UtilKit({super.key});
+  const UtilKit(
+      {super.key, required this.onToggleRecordPanel, required this.recording});
+
+  final VoidCallback onToggleRecordPanel;
+  final bool recording;
 
   @override
   _UtilKitState createState() => _UtilKitState();
@@ -24,13 +28,13 @@ class _UtilKitState extends State<UtilKit> {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         AppIconButton(
-          onPressed: () {},
+          onPressed: widget.onToggleRecordPanel,
           icon: SvgPicture.asset(
             "assets/svg/mic_icon.svg",
             height: 20,
             width: 20,
-            colorFilter: isAutoScriptPanelOpen
-                ? activeIconSvgColorFilter
+            colorFilter: widget.recording
+                ? ColorFilter.mode(Colors.red, BlendMode.srcIn)
                 : inactiveIconSvgColorFilter,
           ),
         ),

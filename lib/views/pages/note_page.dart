@@ -4,6 +4,7 @@ import 'package:studyingx/definitions/callbacks.dart';
 import 'package:studyingx/providers/pencil_kit_state.dart';
 import 'package:studyingx/views/fragments/note_drawer.dart';
 import 'package:studyingx/views/fragments/pencil_kit_bar.dart';
+import 'package:studyingx/views/fragments/record_panel.dart';
 import 'package:studyingx/views/molecules/color_palette.dart';
 
 class NotePage extends StatefulWidget {
@@ -14,7 +15,11 @@ class NotePage extends StatefulWidget {
 }
 
 class _NotePageState extends State<NotePage> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool showColorPicker = false;
+  bool showRecordPanel = false;
+  bool recording = false;
+  int recordStartTime = 0;
 
   void onPressed() {
     Navigator.pop(context);
@@ -26,41 +31,70 @@ class _NotePageState extends State<NotePage> {
     });
   }
 
+  void onToggleRecordPanel() {
+    setState(() {
+      showRecordPanel = !showRecordPanel;
+    });
+  }
+
+  void onToggleRecord() {
+    setState(() {
+      if (recording) {
+        recordStartTime = 0;
+      } else {
+        recordStartTime = DateTime.now().millisecondsSinceEpoch;
+      }
+      recording = !recording;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
             PencilKitBar(
               onToggleColorPicker: onToggleColorPicker,
+              onToggleRecordPanel: onToggleRecordPanel,
+              recording: recording,
             ),
             Expanded(
               flex: 1,
-              child: Stack(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: const NoteDrawer(),
-                  ),
-                  const Positioned(
-                    top: 10,
-                    left: 10,
-                    child: HoveredPointerHelpSwitch(),
-                  ),
-                  if (showColorPicker)
-                    Positioned(
-                      top: 15,
-                      left: 0,
-                      right: 0,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: ColorPicker(
-                          onToggleColorPicker: onToggleColorPicker,
+              child: ClipRect(
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: const NoteDrawer(),
+                    ),
+                    const Positioned(
+                      top: 10,
+                      left: 10,
+                      child: HoveredPointerHelpSwitch(),
+                    ),
+                    RecordPanel(
+                      onToggleRecord: onToggleRecord,
+                      recording: recording,
+                      recordStartTime: recordStartTime,
+                      showRecordPanel: showRecordPanel,
+                    ),
+                    if (showColorPicker)
+                      Positioned(
+                        top: 15,
+                        left: 0,
+                        right: 0,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: ColorPicker(
+                            onToggleColorPicker: onToggleColorPicker,
+                          ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
