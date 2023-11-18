@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:studyingx/views/molecules/app_button.dart';
 
 const double recordPanelWidth = 250;
@@ -94,12 +93,12 @@ class _RecordPanelState extends State<RecordPanel> {
         child: Column(
           children: [
             Container(
-              child: ElevatedButton(
+              child: const ElevatedButton(
                 onPressed: null,
                 child: Text("Dropdown script #1"),
               ),
             ),
-            Expanded(
+            const Expanded(
               flex: 1,
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
@@ -113,7 +112,7 @@ class _RecordPanelState extends State<RecordPanel> {
               label: widget.recording ? elapsedTime : "Start Recording",
               backgroundColor: widget.recording
                   ? const Color.fromARGB(255, 255, 112, 102)
-                  : Color.fromARGB(255, 21, 160, 46),
+                  : const Color.fromARGB(255, 21, 160, 46),
               borderRadius: 0,
               height: 50,
               color: Colors.white,

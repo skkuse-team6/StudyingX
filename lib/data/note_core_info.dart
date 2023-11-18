@@ -15,7 +15,7 @@ class NoteCoreInfo {
 
   static final empty = NoteCoreInfo._(
     filePath: '',
-    page: const NoteDrawer(),
+    page: NoteDrawer(),
     screenshot: Uint8List(0),
   );
 
