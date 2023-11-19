@@ -70,6 +70,9 @@ class _NoteDrawerState extends State<NoteDrawer> {
   void initState() {
     super.initState();
 
+    // load strokes from file
+    // TODO :: load strokes from file
+
     iOSChannel = const MethodChannel("com.studyingx/apple_pencil");
     iOSChannel.setMethodCallHandler((call) async {
       switch (call.method) {
@@ -91,6 +94,9 @@ class _NoteDrawerState extends State<NoteDrawer> {
   void dispose() {
     iOSChannel.setMethodCallHandler(null);
     super.dispose();
+
+    var strokesJson = strokes.map((stroke) => stroke.toObject()).toList();
+    // TODO :: save strokesJson to file
   }
 
 // getters and setters

@@ -48,6 +48,14 @@ class Edge {
     final distanceToCenter = (projectionPoint - center).distance;
     return distanceToCenter <= radius + halfEdgeWidth;
   }
+
+  Object toObject() {
+    return {
+      "start": {"x": start.dx, "y": start.dy},
+      "end": {"x": end.dx, "y": end.dy},
+      "pressure": pressure
+    };
+  }
 }
 
 class Stroke {
@@ -67,6 +75,13 @@ class Stroke {
       vertices.add(PressuredVertex(edge.end, edge.pressure));
     }
     return vertices;
+  }
+
+  Object toObject() {
+    return {
+      "edges": edges.map((e) => e.toObject()).toList(),
+      "color": color.value
+    };
   }
 }
 
