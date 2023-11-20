@@ -67,6 +67,9 @@ class _NoteDrawerState extends State<NoteDrawer> {
   late final MethodChannel iOSChannel;
   late final MethodChannel androidChannel;
 
+  // save last PencilKitMode (Android only)
+  var lastDrawMode = PencilKitMode.pen;
+
   @override
   void initState() {
     super.initState();
@@ -88,20 +91,19 @@ class _NoteDrawerState extends State<NoteDrawer> {
     });
 
     androidChannel = const MethodChannel("com.studyingx/android_pen");
+    lastDrawMode = Provider.of<PencilKitState>(context, listen: false).drawMode;
     androidChannel.setMethodCallHandler((call) async {
       switch (call.method) {
         case "stylusButtonPressed":
           PencilKitState state =
               Provider.of<PencilKitState>(context, listen: false);
-          if (state.drawMode == PencilKitMode.pen) {
-            state.setDrawMode(PencilKitMode.eraser);
-          }
+          lastDrawMode = state.drawMode;
+          state.setDrawMode(PencilKitMode.eraser);
           break;
         case "stylusButtonReleased":
           PencilKitState state =
               Provider.of<PencilKitState>(context, listen: false);
-          // TODO: go back to previous mode
-          state.setDrawMode(PencilKitMode.pen);
+          state.setDrawMode(lastDrawMode);
           break;
       }
     });
