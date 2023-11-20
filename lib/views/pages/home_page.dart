@@ -180,6 +180,7 @@ class _HomePageState extends State<HomePage> {
                     for (String filePath in selectedFiles.value)
                       _deleteFile(filePath),
                   ]);
+                  selectedFiles.value = [];
                 },
                 icon: const Icon(Icons.delete_forever),
               ),
