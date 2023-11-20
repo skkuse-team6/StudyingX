@@ -105,6 +105,22 @@ class _NoteDrawerState extends State<NoteDrawer> {
               Provider.of<PencilKitState>(context, listen: false);
           state.setDrawMode(lastDrawMode);
           break;
+        case "touchDown":
+          setState(() {
+            double x = call.arguments["x"];
+            double y = call.arguments["y"];
+            var absPoint = Offset(
+                x / 2, (y - 40) / 2 + _scrollController.offset); // HARD-CODED
+            var eraserRect =
+                Rect.fromCircle(center: absPoint, radius: eraseRadius);
+            strokes.removeWhere((stroke) {
+              return stroke.edges.any((edge) {
+                return edge.intersectsWithCircle(eraserRect);
+              });
+            });
+            erasingPoint = absPoint;
+          });
+          break;
       }
     });
   }

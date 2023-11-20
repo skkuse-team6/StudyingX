@@ -27,4 +27,14 @@ class MainActivity : FlutterActivity() {
 
         return super.dispatchGenericMotionEvent(event)
     }
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (lastButtonState == 1) {
+            MethodChannel(flutterEngine!!.dartExecutor.binaryMessenger, CHANNEL).invokeMethod("touchDown", mapOf(
+                "x" to event.x,
+                "y" to event.y
+            ))
+        }
+        return super.dispatchTouchEvent(event)
+    }
 }
