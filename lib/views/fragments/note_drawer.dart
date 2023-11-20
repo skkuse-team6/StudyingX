@@ -65,6 +65,7 @@ class _NoteDrawerState extends State<NoteDrawer> {
 
   // iOS Method Channel
   late final MethodChannel iOSChannel;
+  late final MethodChannel androidChannel;
 
   @override
   void initState() {
@@ -85,11 +86,31 @@ class _NoteDrawerState extends State<NoteDrawer> {
           }
       }
     });
+
+    androidChannel = const MethodChannel("com.studyingx/android_pen");
+    androidChannel.setMethodCallHandler((call) async {
+      switch (call.method) {
+        case "stylusButtonPressed":
+          PencilKitState state =
+              Provider.of<PencilKitState>(context, listen: false);
+          if (state.drawMode == PencilKitMode.pen) {
+            state.setDrawMode(PencilKitMode.eraser);
+          }
+          break;
+        case "stylusButtonReleased":
+          PencilKitState state =
+              Provider.of<PencilKitState>(context, listen: false);
+          // TODO: go back to previous mode
+          state.setDrawMode(PencilKitMode.pen);
+          break;
+      }
+    });
   }
 
   @override
   void dispose() {
     iOSChannel.setMethodCallHandler(null);
+    androidChannel.setMethodCallHandler(null);
     super.dispose();
   }
 
