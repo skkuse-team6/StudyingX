@@ -57,7 +57,8 @@ class InitialPage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  child: const Text("Get Started"),
+                  child: const Text("Get Started",
+                      style: TextStyle(color: Colors.lightGreen)),
                 )
               ],
             ),

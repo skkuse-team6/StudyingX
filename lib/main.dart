@@ -3,9 +3,15 @@ import 'package:studyingx/providers/pencil_kit_state.dart';
 import 'package:studyingx/views/routes.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+import 'package:studyingx/data/prefs.dart';
+import 'package:studyingx/data/file_manager.dart';
 
 void main() {
   initializeDateFormatting().then((_) {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    Prefs.init();
+    FileManager.init();
     runApp(
       MultiProvider(
         providers: [
