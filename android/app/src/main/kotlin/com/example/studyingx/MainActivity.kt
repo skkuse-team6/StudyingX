@@ -7,15 +7,24 @@ import android.view.MotionEvent
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.studyingx/android_pen"
+    private var lastButtonState = 0
 
     override fun dispatchGenericMotionEvent(event: MotionEvent): Boolean {
-        if (event.buttonState == MotionEvent.BUTTON_STYLUS_PRIMARY) {
-            if (event.action == MotionEvent.ACTION_HOVER_MOVE) {
+        if (event.action == MotionEvent.ACTION_HOVER_MOVE) {
+            if (event.buttonState == MotionEvent.BUTTON_STYLUS_PRIMARY && lastButtonState == 0) {
                 MethodChannel(flutterEngine!!.dartExecutor.binaryMessenger, CHANNEL).invokeMethod("stylusButtonPressed", null)
+                lastButtonState = 1
             }
-        } else if (event.action == MotionEvent.ACTION_HOVER_EXIT){
-            MethodChannel(flutterEngine!!.dartExecutor.binaryMessenger, CHANNEL).invokeMethod("stylusButtonReleased", null)
+            if (event.buttonState == MotionEvent.TOOL_TYPE_UNKNOWN && lastButtonState == 1) {
+                MethodChannel(flutterEngine!!.dartExecutor.binaryMessenger, CHANNEL).invokeMethod("stylusButtonReleased", null)
+                lastButtonState = 0
+            }
         }
+        if (event.action == MotionEvent.ACTION_HOVER_EXIT && event.buttonState == MotionEvent.TOOL_TYPE_UNKNOWN && lastButtonState == 1) {
+            MethodChannel(flutterEngine!!.dartExecutor.binaryMessenger, CHANNEL).invokeMethod("stylusButtonReleased", null)
+            lastButtonState = 0
+        }
+
         return super.dispatchGenericMotionEvent(event)
     }
 }
