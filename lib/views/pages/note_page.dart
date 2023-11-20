@@ -1,20 +1,97 @@
+import 'dart:async';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
+import 'package:logging/logging.dart';
+import 'package:flutter/rendering.dart';
 import 'package:studyingx/definitions/callbacks.dart';
 import 'package:studyingx/providers/pencil_kit_state.dart';
 import 'package:studyingx/views/fragments/note_drawer.dart';
 import 'package:studyingx/views/fragments/pencil_kit_bar.dart';
 import 'package:studyingx/views/molecules/color_palette.dart';
+import 'package:studyingx/data/file_manager.dart';
+import 'package:studyingx/data/note_core_info.dart';
+import 'package:studyingx/views/molecules/preview_card.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:studyingx/views/fragments/record_panel.dart';
 
 class NotePage extends StatefulWidget {
-  const NotePage({Key? key}) : super(key: key);
+  final log = Logger('NotePageState');
+
+  NotePage({Key? key, String? path})
+      : initialPath =
+            path != null ? Future.value(path) : FileManager.newFilePath('/'),
+        super(key: key);
+
+  final Future<String> initialPath;
+
+  static const String extension = '.stdx';
 
   @override
   State<NotePage> createState() => _NotePageState();
 }
 
 class _NotePageState extends State<NotePage> {
+  final log = Logger('NotePageState');
+
+  late NoteCoreInfo coreInfo = NoteCoreInfo(filePath: '');
+  late NoteDrawer noteDrawer = coreInfo.page;
+  late String path = '';
+
+  ScreenshotController screenshotController = ScreenshotController();
+  Uint8List screenshot = Uint8List(0);
+  bool captured = false;
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool showColorPicker = false;
+  bool showRecordPanel = false;
+  bool recording = false;
+  int recordStartTime = 0;
+
+  @override
+  void initState() {
+    _initAsync();
+
+    super.initState();
+  }
+
+  String get _filename =>
+      coreInfo.filePath.substring(coreInfo.filePath.lastIndexOf('/') + 1);
+
+  void _initAsync() async {
+    coreInfo = PreviewCard.getCachedCoreInfo(await widget.initialPath);
+    await _initStrokes();
+  }
+
+  Future _initStrokes() async {
+    coreInfo = await NoteCoreInfo.loadFromFilePath(coreInfo.filePath);
+    setState(() {});
+  }
+
+  Future<void> saveToFile() async {
+    await screenshotController
+        .capture(delay: const Duration(milliseconds: 20))
+        .then((Uint8List? image) {
+      if (image != null) {
+        setState(() {
+          screenshot = image;
+          captured = true;
+        });
+      }
+    });
+    coreInfo.screenshot = screenshot;
+    coreInfo.captured = captured;
+    coreInfo.page = noteDrawer;
+    final toSave = coreInfo.serializeToBSON();
+    try {
+      await FileManager.writeFile(coreInfo.filePath, toSave, awaitWrite: true);
+    } catch (e) {
+      log.severe('Failed to save file: $e', e);
+      if (kDebugMode) rethrow;
+    }
+  }
 
   void onPressed() {
     Navigator.pop(context);
@@ -26,47 +103,85 @@ class _NotePageState extends State<NotePage> {
     });
   }
 
+  void onToggleRecordPanel() {
+    setState(() {
+      showRecordPanel = !showRecordPanel;
+    });
+  }
+
+  void onToggleRecord() {
+    setState(() {
+      if (recording) {
+        recordStartTime = 0;
+      } else {
+        recordStartTime = DateTime.now().millisecondsSinceEpoch;
+      }
+      recording = !recording;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    noteDrawer = coreInfo.page;
     return Scaffold(
+      key: _scaffoldKey,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
             PencilKitBar(
               onToggleColorPicker: onToggleColorPicker,
+              onToggleRecordPanel: onToggleRecordPanel,
+              recording: recording,
             ),
             Expanded(
               flex: 1,
-              child: Stack(
-                children: [
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: const NoteDrawer(),
-                  ),
-                  const Positioned(
-                    top: 10,
-                    left: 10,
-                    child: HoveredPointerHelpSwitch(),
-                  ),
-                  if (showColorPicker)
-                    Positioned(
-                      top: 15,
-                      left: 0,
-                      right: 0,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: ColorPicker(
-                          onToggleColorPicker: onToggleColorPicker,
+              child: ClipRect(
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: noteDrawer,
+                    ),
+                    const Positioned(
+                      top: 10,
+                      left: 10,
+                      child: HoveredPointerHelpSwitch(),
+                    ),
+                    RecordPanel(
+                      onToggleRecord: onToggleRecord,
+                      recording: recording,
+                      recordStartTime: recordStartTime,
+                      showRecordPanel: showRecordPanel,
+                    ),
+                    if (showColorPicker)
+                      Positioned(
+                        top: 15,
+                        left: 0,
+                        right: 0,
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: ColorPicker(
+                            onToggleColorPicker: onToggleColorPicker,
+                          ),
                         ),
                       ),
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    (() async {
+      await saveToFile();
+    })();
+    super.dispose();
   }
 }
 
@@ -104,8 +219,8 @@ class _ColorPickerState extends State<ColorPicker> {
         border: Border.all(color: const Color.fromARGB(25, 0, 0, 0)),
         borderRadius: BorderRadius.circular(10),
         color: Colors.white,
-        boxShadow: [
-          const BoxShadow(
+        boxShadow: const [
+          BoxShadow(
             color: Color.fromARGB(30, 0, 0, 0),
             spreadRadius: 1,
             offset: Offset(0, 2),

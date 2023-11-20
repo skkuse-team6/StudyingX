@@ -48,6 +48,22 @@ class Edge {
     final distanceToCenter = (projectionPoint - center).distance;
     return distanceToCenter <= radius + halfEdgeWidth;
   }
+
+  factory Edge.fromJson(Map<String, dynamic> json) {
+    return Edge(
+      Offset(json['s']['x'] ?? 0.0, json['s']['y'] ?? 0.0),
+      Offset(json['e']['x'] ?? 0.0, json['e']['y'] ?? 0.0),
+      json['p'] ?? 0.0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      's': {'x': start.dx, 'y': start.dy},
+      'e': {'x': end.dx, 'y': end.dy},
+      'p': pressure,
+    };
+  }
 }
 
 class Stroke {
@@ -67,6 +83,44 @@ class Stroke {
       vertices.add(PressuredVertex(edge.end, edge.pressure));
     }
     return vertices;
+  }
+
+  factory Stroke.fromJson(Map<String, dynamic> json) {
+    List<Edge> edges = (json['e'] as List<dynamic>)
+        .map((edgeJson) => Edge.fromJson(edgeJson))
+        .toList();
+
+    Color color = _parseColor(json['c']);
+
+    return Stroke(edges, color);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'e': edges.map((edge) => edge.toJson()).toList(),
+      'c': _formatColor(color),
+    };
+  }
+
+  static Color _parseColor(dynamic colorJson) {
+    if (colorJson is int) {
+      return Color(colorJson);
+    } else if (colorJson is String &&
+        colorJson.startsWith("Color(") &&
+        colorJson.endsWith(")")) {
+      String hexColor = colorJson.substring(8, colorJson.length - 1);
+      return hexToColor(hexColor);
+    } else {
+      throw const FormatException("Invalid color format");
+    }
+  }
+
+  static String _formatColor(Color color) {
+    return "Color(${color.value.toRadixString(16).padLeft(8, '0')})";
+  }
+
+  static Color hexToColor(String code) {
+    return Color(int.parse(code, radix: 16) + 0xFF000000);
   }
 }
 

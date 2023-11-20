@@ -4,10 +4,16 @@ import 'package:studyingx/views/fragments/pencil_kit.dart';
 import 'package:studyingx/views/fragments/util_kit.dart';
 
 class PencilKitBar extends StatefulWidget {
-  const PencilKitBar({Key? key, required this.onToggleColorPicker})
+  const PencilKitBar(
+      {Key? key,
+      required this.onToggleColorPicker,
+      required this.onToggleRecordPanel,
+      required this.recording})
       : super(key: key);
 
   final BoolCallback onToggleColorPicker;
+  final VoidCallback onToggleRecordPanel;
+  final bool recording;
 
   @override
   State<StatefulWidget> createState() {
@@ -44,7 +50,12 @@ class _PencilKitBarState extends State<PencilKitBar> {
                 onToggleColorPicker: widget.onToggleColorPicker,
               ),
             ),
-            const Expanded(child: UtilKit()),
+            Expanded(
+              child: UtilKit(
+                onToggleRecordPanel: widget.onToggleRecordPanel,
+                recording: widget.recording,
+              ),
+            ),
           ],
         ),
       ),
