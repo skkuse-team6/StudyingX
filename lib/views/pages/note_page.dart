@@ -71,16 +71,6 @@ class _NotePageState extends State<NotePage> {
   }
 
   Future<void> saveToFile() async {
-    await screenshotController
-        .capture(delay: const Duration(milliseconds: 20))
-        .then((Uint8List? image) {
-      if (image != null) {
-        setState(() {
-          screenshot = image;
-          captured = true;
-        });
-      }
-    });
     coreInfo.screenshot = screenshot;
     coreInfo.captured = captured;
     coreInfo.page = noteDrawer;
@@ -126,6 +116,27 @@ class _NotePageState extends State<NotePage> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white,
+      floatingActionButton: FloatingActionButton.small(
+        onPressed: () async {
+          await screenshotController
+              .capture(delay: const Duration(milliseconds: 20))
+              .then((Uint8List? image) {
+            if (image != null) {
+              setState(() {
+                screenshot = image;
+                captured = true;
+              });
+            }
+          });
+          onPressed();
+        },
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(50),
+        ),
+        backgroundColor: Colors.lightGreen,
+        child: const Icon(Icons.save, color: Colors.white),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
       body: SafeArea(
         child: Column(
           children: [
@@ -139,9 +150,12 @@ class _NotePageState extends State<NotePage> {
               child: ClipRect(
                 child: Stack(
                   children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      child: noteDrawer,
+                    Screenshot(
+                      controller: screenshotController,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: noteDrawer,
+                      ),
                     ),
                     const Positioned(
                       top: 10,
