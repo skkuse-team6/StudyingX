@@ -101,6 +101,10 @@ class _NoteDrawerState extends State<NoteDrawer> {
 
   // iOS Method Channel
   late final MethodChannel iOSChannel;
+  late final MethodChannel androidChannel;
+
+  // save last PencilKitMode (Android only)
+  var lastDrawMode = PencilKitMode.pen;
 
   @override
   void initState() {
@@ -124,11 +128,46 @@ class _NoteDrawerState extends State<NoteDrawer> {
           }
       }
     });
+
+    androidChannel = const MethodChannel("com.studyingx/android_pen");
+    lastDrawMode = Provider.of<PencilKitState>(context, listen: false).drawMode;
+    androidChannel.setMethodCallHandler((call) async {
+      switch (call.method) {
+        case "stylusButtonPressed":
+          PencilKitState state =
+              Provider.of<PencilKitState>(context, listen: false);
+          lastDrawMode = state.drawMode;
+          state.setDrawMode(PencilKitMode.eraser);
+          break;
+        case "stylusButtonReleased":
+          PencilKitState state =
+              Provider.of<PencilKitState>(context, listen: false);
+          state.setDrawMode(lastDrawMode);
+          break;
+        case "touchDown":
+          setState(() {
+            double x = call.arguments["x"];
+            double y = call.arguments["y"];
+            var absPoint = Offset(
+                x / 2, (y - 40) / 2 + _scrollController.offset); // HARD-CODED
+            var eraserRect =
+                Rect.fromCircle(center: absPoint, radius: eraseRadius);
+            strokes.removeWhere((stroke) {
+              return stroke.edges.any((edge) {
+                return edge.intersectsWithCircle(eraserRect);
+              });
+            });
+            erasingPoint = absPoint;
+          });
+          break;
+      }
+    });
   }
 
   @override
   void dispose() {
     iOSChannel.setMethodCallHandler(null);
+    androidChannel.setMethodCallHandler(null);
     super.dispose();
 
     var strokesJson = strokes.map((stroke) => stroke.toObject()).toList();
