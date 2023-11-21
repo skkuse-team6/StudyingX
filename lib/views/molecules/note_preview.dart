@@ -28,6 +28,7 @@ class NotePreview extends StatelessWidget {
         )
       ]),
       child: Card(
+        color: Colors.white,
         child: Column(
           children: [
             Expanded(
