@@ -134,12 +134,16 @@ class _NoteDrawerState extends State<NoteDrawer> {
     androidChannel.setMethodCallHandler((call) async {
       switch (call.method) {
         case "stylusButtonPressed":
+          logger.d("stylusButtonPressed");
+
           PencilKitState state =
               Provider.of<PencilKitState>(context, listen: false);
           lastDrawMode = state.drawMode;
           state.setDrawMode(PencilKitMode.eraser);
           break;
         case "stylusButtonReleased":
+          logger.d("stylusButtonReleased");
+
           PencilKitState state =
               Provider.of<PencilKitState>(context, listen: false);
           state.setDrawMode(lastDrawMode);
@@ -231,10 +235,12 @@ class _NoteDrawerState extends State<NoteDrawer> {
         }
 
         pointers[e.pointer] = e.kind;
+        // logger.d("down pointer: ${e.pointer}, kind: ${e.kind}, mode: $mode");
 
         switch (mode) {
           case Mode.draw:
             currentStroke = Stroke([], Color(state.penColor));
+            logger.d("draw pen color: ${state.penColor}");
             final point = e.localPosition;
             final absPoint =
                 Offset(point.dx, point.dy + _scrollController.offset);
@@ -270,6 +276,9 @@ class _NoteDrawerState extends State<NoteDrawer> {
               if (newEdge.start != newEdge.end) {
                 currentStroke.addEdge(newEdge);
               }
+            }
+            if (currentStroke.color != Color(state.penColor)) {
+              currentStroke.color = Color(state.penColor);
             }
             if (absPoint.dy > panelHeight - panelExpandToleranceY) {
               setState(() {
@@ -412,10 +421,6 @@ class _NoteDrawerState extends State<NoteDrawer> {
                             ),
                             Text(
                               "color: ${Color(state.penColor).toString()}",
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              "currentStroke: ${currentStroke.color.toString()}, (${currentStroke.edges.last.end.dx}, ${currentStroke.edges.last.end.dy})",
                               style: const TextStyle(color: Colors.white),
                             ),
                           ],
