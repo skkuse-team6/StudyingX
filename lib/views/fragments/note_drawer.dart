@@ -13,7 +13,43 @@ const double minPageHeight = 2 * pageHeightUnit;
 const double panelExpandToleranceY = 50;
 
 class NoteDrawer extends StatefulWidget {
-  const NoteDrawer({Key? key}) : super(key: key);
+  NoteDrawer({
+    Key? key,
+    String? path,
+    List<Stroke>? strokes,
+  })  : path = path ?? '',
+        strokes = strokes ?? [],
+        super(key: key);
+
+  final String path;
+  final List<Stroke> strokes;
+
+  bool get isEmpty => strokes.isEmpty;
+  bool get isNotEmpty => !isEmpty;
+
+  factory NoteDrawer.fromJson(Map<String, dynamic> json) {
+    return NoteDrawer(
+      path: json['p'] as String? ?? '',
+      strokes: parseStrokesJson(json['s'] as List?),
+    );
+  }
+
+  Map<String, dynamic> toJson(List<Uint8List> assets) => {
+        'p': path,
+        's': strokes.map((stroke) => stroke.toJson()).toList(),
+      };
+
+  static List<Stroke> parseStrokesJson(
+    List<dynamic>? strokes,
+  ) =>
+      strokes
+          ?.map((dynamic stroke) {
+            final map = stroke as Map<String, dynamic>;
+            return Stroke.fromJson(map);
+          })
+          .cast<Stroke>()
+          .toList() ??
+      [];
 
   @override
   State<StatefulWidget> createState() {
@@ -142,6 +178,8 @@ class _NoteDrawerState extends State<NoteDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    strokes = widget.strokes;
+
     PencilKitState state = context.watch<PencilKitState>();
     String mode = getMode(state);
     bool disableDefaultScrolling = mode == Mode.draw || mode == Mode.erase;

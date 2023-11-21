@@ -10,5 +10,11 @@ const String notePage = '/note';
 final routes = {
   initialPage: (context) => const InitialPage(),
   homePage: (context) => const HomePage(),
-  notePage: (context) => const NotePage(),
+  notePage: (context) => NotePage(),
 };
+
+abstract class RoutePaths {
+  static String editFilePath(String filePath) {
+    return '$notePage?path=${Uri.encodeQueryComponent(filePath)}';
+  }
+}
