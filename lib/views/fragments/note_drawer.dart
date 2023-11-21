@@ -8,7 +8,7 @@ import 'package:studyingx/objects/paint.dart';
 import 'package:studyingx/providers/pencil_kit_state.dart';
 import 'package:studyingx/views/fragments/note_painters.dart';
 
-const double pageHeightUnit = 800;
+const double pageHeightUnit = 1600;
 const double minPageHeight = 2 * pageHeightUnit;
 const double panelExpandToleranceY = 50;
 
@@ -170,7 +170,6 @@ class _NoteDrawerState extends State<NoteDrawer> {
     androidChannel.setMethodCallHandler(null);
     super.dispose();
 
-    var strokesJson = strokes.map((stroke) => stroke.toObject()).toList();
     // TODO :: save strokesJson to file
   }
 
@@ -409,6 +408,14 @@ class _NoteDrawerState extends State<NoteDrawer> {
                             ),
                             Text(
                               "tilt: ${currentTilt.toStringAsFixed(2)}",
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            Text(
+                              "color: ${Color(state.penColor).toString()}",
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            Text(
+                              "currentStroke: ${currentStroke.color.toString()}, (${currentStroke.edges.last.end.dx}, ${currentStroke.edges.last.end.dy})",
                               style: const TextStyle(color: Colors.white),
                             ),
                           ],
