@@ -8,11 +8,13 @@ class PencilKitBar extends StatefulWidget {
       {Key? key,
       required this.onToggleColorPicker,
       required this.onToggleRecordPanel,
-      required this.recording})
+      required this.recording,
+      required this.onBackBtnPressed})
       : super(key: key);
 
   final BoolCallback onToggleColorPicker;
   final VoidCallback onToggleRecordPanel;
+  final VoidCallback onBackBtnPressed;
   final bool recording;
 
   @override
@@ -36,7 +38,7 @@ class _PencilKitBarState extends State<PencilKitBar> {
                 alignment: Alignment.centerLeft,
                 child: IconButton(
                   onPressed: () {
-                    Navigator.pop(context);
+                    widget.onBackBtnPressed();
                   },
                   icon: const Icon(
                     Icons.arrow_back_ios_new,

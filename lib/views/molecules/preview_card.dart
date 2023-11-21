@@ -184,10 +184,23 @@ class _PreviewCardState extends State<PreviewCard> {
                       ),
                     ],
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: Text(widget.filePath
-                        .substring(widget.filePath.lastIndexOf('/') + 1)),
+                  Container(
+                    // color: const Color.fromARGB(255, 243, 243, 243),
+                    decoration: const BoxDecoration(
+                      border: Border(
+                        top: BorderSide(
+                          color: Color.fromARGB(255, 232, 232, 232),
+                          width: 1,
+                        ),
+                      ),
+                    ),
+                    width: width,
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(widget.filePath
+                          .substring(widget.filePath.lastIndexOf('/') + 1)),
+                    ),
                   ),
                 ],
               ),

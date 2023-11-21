@@ -80,13 +80,13 @@ class _HomePageState extends State<HomePage> {
                   ),
                   sliver: SliverAppBar(
                     collapsedHeight: kToolbarHeight,
-                    expandedHeight: 170,
+                    expandedHeight: 140,
                     pinned: true,
                     scrolledUnderElevation: 1,
                     flexibleSpace: const FlexibleSpaceBar(
                       title: Text('All Notes',
                           style: TextStyle(
-                            fontSize: 40,
+                            fontSize: 36,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
                           )),
