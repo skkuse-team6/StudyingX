@@ -423,11 +423,6 @@ class _NoteDrawerState extends State<NoteDrawer> {
                               "color: ${Color(state.penColor).toString()}",
                               style: const TextStyle(color: Colors.white),
                             ),
-                            // if (currentStroke.edges.isNotEmpty)
-                            //   Text(
-                            //     "currentStroke: ${currentStroke.color.toString()}, (${currentStroke.edges.last.end.dx}, ${currentStroke.edges.last.end.dy})",
-                            //     style: const TextStyle(color: Colors.white),
-                            //   ),
                           ],
                         ),
                       ),
