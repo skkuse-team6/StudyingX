@@ -41,8 +41,8 @@ class _ViewFilesState extends State<ViewFiles> {
       sliver: SliverMasonryGrid.count(
         childCount: files.length,
         crossAxisCount: widget.crossAxisCount,
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 8,
+        mainAxisSpacing: 12,
+        crossAxisSpacing: 12,
         itemBuilder: (context, index) {
           if (index >= files.length) {
             return const SizedBox.shrink();

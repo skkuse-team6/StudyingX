@@ -19,16 +19,20 @@ class NotePreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(boxShadow: [
-        BoxShadow(
-          color: Color.fromARGB(100, 0, 0, 0),
-          spreadRadius: -5,
-          blurRadius: 7,
-          offset: Offset(0, 3), // changes position of shadow
-        )
-      ]),
+      // decoration: const BoxDecoration(boxShadow: [
+      //   BoxShadow(
+      //     color: Color.fromARGB(100, 0, 0, 0),
+      //     spreadRadius: -5,
+      //     blurRadius: 7,
+      //     offset: Offset(0, 3), // changes position of shadow
+      //   )
+      // ]),
       child: Card(
         color: Colors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(0),
+        ),
         child: Column(
           children: [
             Expanded(

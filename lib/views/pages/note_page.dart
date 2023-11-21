@@ -83,8 +83,18 @@ class _NotePageState extends State<NotePage> {
     }
   }
 
-  void onPressed() {
-    Navigator.pop(context);
+  void onBackBtnPressed() {
+    screenshotController
+        .capture(delay: const Duration(milliseconds: 20))
+        .then((Uint8List? image) {
+      if (image != null) {
+        setState(() {
+          screenshot = image;
+          captured = true;
+        });
+        Navigator.pop(context);
+      }
+    });
   }
 
   void onToggleColorPicker(bool mustHide) {
@@ -116,33 +126,34 @@ class _NotePageState extends State<NotePage> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.white,
-      floatingActionButton: FloatingActionButton.small(
-        onPressed: () async {
-          await screenshotController
-              .capture(delay: const Duration(milliseconds: 20))
-              .then((Uint8List? image) {
-            if (image != null) {
-              setState(() {
-                screenshot = image;
-                captured = true;
-              });
-            }
-          });
-          onPressed();
-        },
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(50),
-        ),
-        backgroundColor: Colors.lightGreen,
-        child: const Icon(Icons.save, color: Colors.white),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+      // floatingActionButton: FloatingActionButton.small(
+      //   onPressed: () async {
+      //     await screenshotController
+      //         .capture(delay: const Duration(milliseconds: 20))
+      //         .then((Uint8List? image) {
+      //       if (image != null) {
+      //         setState(() {
+      //           screenshot = image;
+      //           captured = true;
+      //         });
+      //       }
+      //     });
+      //     onPressed();
+      //   },
+      //   shape: RoundedRectangleBorder(
+      //     borderRadius: BorderRadius.circular(50),
+      //   ),
+      //   backgroundColor: Colors.lightGreen,
+      //   child: const Icon(Icons.save, color: Colors.white),
+      // ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
       body: SafeArea(
         child: Column(
           children: [
             PencilKitBar(
               onToggleColorPicker: onToggleColorPicker,
               onToggleRecordPanel: onToggleRecordPanel,
+              onBackBtnPressed: onBackBtnPressed,
               recording: recording,
             ),
             Expanded(
