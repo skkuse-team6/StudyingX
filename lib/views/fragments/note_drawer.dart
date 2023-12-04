@@ -152,8 +152,8 @@ class _NoteDrawerState extends State<NoteDrawer> {
           setState(() {
             double x = call.arguments["x"];
             double y = call.arguments["y"];
-            var absPoint = Offset(
-                x / 2, (y - 40) / 2 + _scrollController.offset); // HARD-CODED
+            var absPoint =
+                Offset(x / 2, y / 2 + _scrollController.offset); // HARD-CODED
             var eraserRect =
                 Rect.fromCircle(center: absPoint, radius: eraseRadius);
             strokes.removeWhere((stroke) {
@@ -345,6 +345,9 @@ class _NoteDrawerState extends State<NoteDrawer> {
     }
 
     return GestureDetector(
+      onPanStart: (details) {
+        logger.d("onPanStart");
+      },
       child: Listener(
         behavior: HitTestBehavior.opaque,
         onPointerDown: onPointerDown,
@@ -382,51 +385,51 @@ class _NoteDrawerState extends State<NoteDrawer> {
                       ),
                       child: Container(),
                     ),
-                    Positioned(
-                      top: 100,
-                      left: 20,
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        alignment: Alignment.center,
-                        decoration: const BoxDecoration(
-                          color: Color.fromARGB(174, 0, 0, 0),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("mode: $mode",
-                                style: const TextStyle(color: Colors.white)),
-                            Text("drawing device: $drawingDevice",
-                                style: const TextStyle(color: Colors.white)),
-                            Text("pointers: ${pointers.length}",
-                                style: const TextStyle(color: Colors.white)),
-                            Text("using stylus: $usingStylus",
-                                style: const TextStyle(color: Colors.white)),
-                            Text("panel height: $panelHeight",
-                                style: const TextStyle(color: Colors.white)),
-                            Text(
-                                "current stroke: ${currentStroke.edges.length}",
-                                style: const TextStyle(color: Colors.white)),
-                            Text(
-                              "pressure: ${currentPressure.toStringAsFixed(2)}",
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              "orientation: ${currentOrientation.toStringAsFixed(2)}",
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              "tilt: ${currentTilt.toStringAsFixed(2)}",
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                            Text(
-                              "color: ${Color(state.penColor).toString()}",
-                              style: const TextStyle(color: Colors.white),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    //   Positioned(
+                    //     top: 100,
+                    //     left: 20,
+                    //     child: Container(
+                    //       padding: const EdgeInsets.all(8),
+                    //       alignment: Alignment.center,
+                    //       decoration: const BoxDecoration(
+                    //         color: Color.fromARGB(174, 0, 0, 0),
+                    //       ),
+                    //       child: Column(
+                    //         crossAxisAlignment: CrossAxisAlignment.start,
+                    //         children: [
+                    //           Text("mode: $mode",
+                    //               style: const TextStyle(color: Colors.white)),
+                    //           Text("drawing device: $drawingDevice",
+                    //               style: const TextStyle(color: Colors.white)),
+                    //           Text("pointers: ${pointers.length}",
+                    //               style: const TextStyle(color: Colors.white)),
+                    //           Text("using stylus: $usingStylus",
+                    //               style: const TextStyle(color: Colors.white)),
+                    //           Text("panel height: $panelHeight",
+                    //               style: const TextStyle(color: Colors.white)),
+                    //           Text(
+                    //               "current stroke: ${currentStroke.edges.length}",
+                    //               style: const TextStyle(color: Colors.white)),
+                    //           Text(
+                    //             "pressure: ${currentPressure.toStringAsFixed(2)}",
+                    //             style: const TextStyle(color: Colors.white),
+                    //           ),
+                    //           Text(
+                    //             "orientation: ${currentOrientation.toStringAsFixed(2)}",
+                    //             style: const TextStyle(color: Colors.white),
+                    //           ),
+                    //           Text(
+                    //             "tilt: ${currentTilt.toStringAsFixed(2)}",
+                    //             style: const TextStyle(color: Colors.white),
+                    //           ),
+                    //           Text(
+                    //             "color: ${Color(state.penColor).toString()}",
+                    //             style: const TextStyle(color: Colors.white),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     ),
+                    //   ),
                   ],
                 ),
               )

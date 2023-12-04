@@ -3,10 +3,15 @@ import 'package:flutter_svg/svg.dart';
 import 'package:studyingx/views/molecules/app_icon_button.dart';
 
 class UtilKit extends StatefulWidget {
-  const UtilKit(
-      {super.key, required this.onToggleRecordPanel, required this.recording});
+  const UtilKit({
+    super.key,
+    required this.onToggleRecordPanel,
+    required this.onToggleSummaryPanel,
+    required this.recording,
+  });
 
   final VoidCallback onToggleRecordPanel;
+  final VoidCallback onToggleSummaryPanel;
   final bool recording;
 
   @override
@@ -34,12 +39,12 @@ class _UtilKitState extends State<UtilKit> {
             height: 20,
             width: 20,
             colorFilter: widget.recording
-                ? ColorFilter.mode(Colors.red, BlendMode.srcIn)
+                ? const ColorFilter.mode(Colors.red, BlendMode.srcIn)
                 : inactiveIconSvgColorFilter,
           ),
         ),
         AppIconButton(
-          onPressed: () {},
+          onPressed: widget.onToggleSummaryPanel,
           icon: ShaderMask(
             shaderCallback: (Rect bounds) {
               return const LinearGradient(
