@@ -8,12 +8,14 @@ class PencilKitBar extends StatefulWidget {
       {Key? key,
       required this.onToggleColorPicker,
       required this.onToggleRecordPanel,
+      required this.onToggleSummaryPanel,
       required this.recording,
       required this.onBackBtnPressed})
       : super(key: key);
 
   final BoolCallback onToggleColorPicker;
   final VoidCallback onToggleRecordPanel;
+  final VoidCallback onToggleSummaryPanel;
   final VoidCallback onBackBtnPressed;
   final bool recording;
 
@@ -55,6 +57,7 @@ class _PencilKitBarState extends State<PencilKitBar> {
             Expanded(
               child: UtilKit(
                 onToggleRecordPanel: widget.onToggleRecordPanel,
+                onToggleSummaryPanel: widget.onToggleSummaryPanel,
                 recording: widget.recording,
               ),
             ),

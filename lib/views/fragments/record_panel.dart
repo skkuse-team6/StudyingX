@@ -13,16 +13,18 @@ var logger = Logger();
 const double recordPanelWidth = 250;
 
 class RecordPanel extends StatefulWidget {
-  const RecordPanel(
-      {Key? key,
-      required this.showRecordPanel,
-      required this.recording,
-      required this.recordStartTime,
-      required this.onToggleRecord})
-      : super(key: key);
+  const RecordPanel({
+    Key? key,
+    required this.showRecordPanel,
+    required this.recording,
+    required this.recordStartTime,
+    required this.onToggleRecord,
+    required this.onScriptLoaded,
+  }) : super(key: key);
 
   final bool showRecordPanel;
   final VoidCallback onToggleRecord;
+  final Function onScriptLoaded;
   final bool recording;
   final int recordStartTime;
 
@@ -106,6 +108,7 @@ class _RecordPanelState extends State<RecordPanel> {
         setState(() {
           script = jsonData['text'];
           scriptLoaded = true;
+          widget.onScriptLoaded(script);
         });
       } else {
         logger.e('File Upload Failed');

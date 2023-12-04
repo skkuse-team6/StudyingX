@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:logging/logging.dart';
-import 'package:flutter/rendering.dart';
 import 'package:studyingx/definitions/callbacks.dart';
 import 'package:studyingx/providers/pencil_kit_state.dart';
 import 'package:studyingx/views/fragments/note_drawer.dart';
 import 'package:studyingx/views/fragments/pencil_kit_bar.dart';
+import 'package:studyingx/views/fragments/summary_pannel.dart';
 import 'package:studyingx/views/molecules/color_palette.dart';
 import 'package:studyingx/data/file_manager.dart';
 import 'package:studyingx/data/note_core_info.dart';
@@ -47,8 +47,10 @@ class _NotePageState extends State<NotePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool showColorPicker = false;
   bool showRecordPanel = false;
+  bool showSummaryPanel = false;
   bool recording = false;
   int recordStartTime = 0;
+  String script = '';
 
   @override
   void initState() {
@@ -105,7 +107,21 @@ class _NotePageState extends State<NotePage> {
 
   void onToggleRecordPanel() {
     setState(() {
+      showSummaryPanel = false;
       showRecordPanel = !showRecordPanel;
+    });
+  }
+
+  void onToggleSummaryPanel() {
+    setState(() {
+      showRecordPanel = false;
+      showSummaryPanel = !showSummaryPanel;
+    });
+  }
+
+  void updateScript(String script) {
+    setState(() {
+      this.script = script;
     });
   }
 
@@ -153,6 +169,7 @@ class _NotePageState extends State<NotePage> {
             PencilKitBar(
               onToggleColorPicker: onToggleColorPicker,
               onToggleRecordPanel: onToggleRecordPanel,
+              onToggleSummaryPanel: onToggleSummaryPanel,
               onBackBtnPressed: onBackBtnPressed,
               recording: recording,
             ),
@@ -168,16 +185,21 @@ class _NotePageState extends State<NotePage> {
                         child: noteDrawer,
                       ),
                     ),
-                    const Positioned(
-                      top: 10,
-                      left: 10,
-                      child: HoveredPointerHelpSwitch(),
-                    ),
+                    // const Positioned(
+                    //   top: 10,
+                    //   left: 10,
+                    //   child: HoveredPointerHelpSwitch(),
+                    // ),
                     RecordPanel(
                       onToggleRecord: onToggleRecord,
                       recording: recording,
                       recordStartTime: recordStartTime,
                       showRecordPanel: showRecordPanel,
+                      onScriptLoaded: updateScript,
+                    ),
+                    SummaryPanel(
+                      script: script,
+                      showSummaryPanel: showSummaryPanel,
                     ),
                     if (showColorPicker)
                       Positioned(
